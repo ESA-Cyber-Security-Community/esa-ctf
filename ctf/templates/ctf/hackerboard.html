@@ -1,0 +1,159 @@
+{% extends 'ctf/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="glitch">
+        <div class="glitch__img glitch__img_leaderboard"></div>
+        <div class="glitch__img glitch__img_leaderboard"></div>
+        <div class="glitch__img glitch__img_leaderboard"></div>
+        <div class="glitch__img glitch__img_leaderboard"></div>
+        <div class="glitch__img glitch__img_leaderboard"></div>
+    </div>
+    {% include 'ctf/inc/navbar.html' %}
+    <div class="jumbotron bg-transparent mb-0 pt-3 radius-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-12">
+                    <h1 class="display-1 bold color_white content__title text-center"><span class="color_danger">HACKER</span>BOARD<span class="vim-caret">&nbsp;</span></h1>
+                    <p class="text-grey lead text-spacey text-center hackerFont">
+                        Where the world get's ranked!
+
+                    </p>
+                    <div class="row justify-content-center my-5">
+                        <div class="col-xl-10">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5  justify-content-center">
+                <div class="col-xl-10">
+                    <table class="table table-hover table-striped">
+                        <thead class="thead-dark hackerFont">
+                            <tr>
+                                <th>#</th>
+                                <th>Team Name</th>
+                                <th># Challenges Solved</th>
+                                <th>Total Time Taken</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for i in user %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ i.user }}</td>
+                                <td>{{ i.totlesub }}</td>
+                                <td>{{ i.latest_sub_time }}</td>
+                                <td>{{ i.score }}</td>
+                            </tr> {% endfor %}
+<!--                      {% for i in sub %}-->
+<!--                            <tr>-->
+<!--                                <th scope="row">{{ forloop.counter }}</th>-->
+<!--                                <td>{{ i.0.user_id }}</td>-->
+<!--                                <td>{{ i.question.id }}</td>-->
+<!--                                <td>{{ i.0.sub_time }}</td>-->
+<!--                                <td>{{ i.curr_score }}</td>-->
+<!--                            </tr>  {% endfor %}-->
+                           <!-- <tr>
+                                <th scope="row">2</th>
+                                <td>CR007</td>
+                                <td>6</td>
+                                <td>44:59</td>
+                                <td>1900</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td>anonymous</td>
+                                <td>4</td>
+                                <td>40:00</td>
+                                <td>650</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">4</th>
+                                <td>ashawe</td>
+                                <td>5</td>
+                                <td>40:10</td>
+                                <td>550</td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="js/bootstrap-notify.js"></script>
+    <script>
+var colour = ['blue','pink','yellow','red','white'];
+var userlist = [];
+ {% for u in user|slice:"5" %}
+ userlist.push("{{u.user}}")
+ {% endfor %}
+
+
+{% for i in sub|slice:"5" %}
+    var {% cycle 's1' 's2' 's3' 's4' 's5' %} = {
+            label: userlist[{{ forloop.counter0 }}],
+            borderColor: colour[{{ forloop.counter0 }}],
+            steppedLine: true,
+
+
+            data: [
+             {
+                x: '2017-01-06 00:00:00',
+                y: 00
+            },
+
+               {% for j in i %}
+
+  {
+                x: '2017-01-06 {{ j.sub_time }}',
+                y: {{ j.curr_score }}
+               },
+
+                    {% endfor %}
+
+
+            ]
+        };
+
+{% endfor %}
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [ {% for u in user|slice:"5" %}  {% cycle 's1' 's2' 's3' 's4' 's5' %}, {% endfor %}]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        type: 'linear'
+                    }],
+                    xAxes: [{
+                        type: 'time',
+                        distribution: 'series', // or linear
+                        time: {
+                            unit: 'minute',
+                            displayFormats: {
+                                minute: 'mm:ss'
+                            },
+                            tooltipFormat: 'mm:ss'
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+
+{% endblock %}
